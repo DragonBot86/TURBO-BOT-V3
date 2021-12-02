@@ -1,7 +1,7 @@
 const { WAConnection: _WAConnection, ReconnectMode, MessageType, MessageOptions } = require('@adiwajshing/baileys');
 const simple = require("./whatsapp/connecting.js");
 const WAConnection = simple.WAConnection(_WAConnection);
-const Turbo = new WAConnection();
+const Dragon = new WAConnection();
 const qrcode = require("qrcode-terminal");
 const {
   cekWelcome,
@@ -15,7 +15,7 @@ const {
   getCustomBye
 } = require('./functions/welcome')
 const fs = require("fs");
-const thumb = fs.readFileSync('./temp/turbo.jpg')
+const thumb = fs.readFileSync('./temp/Dragon.jpg')
 const { getBuffer } = require('./library/fetcher')
 const { week, time, tanggal} = require("./library/functions");
 const { color } = require("./library/color");
@@ -27,24 +27,24 @@ async function starts() {
 	console.log(color('[QR]','white'), color('Escanee el codigo QR para conectarse'));
 	});
 
-	fs.existsSync('./whatsapp/sessions.json') && Turbo.loadAuthInfo('./whatsapp/sessions.json');
+	fs.existsSync('./whatsapp/sessions.json') && Dragon.loadAuthInfo('./whatsapp/sessions.json');
 	
 	await Turbo.connect({timeoutMs: 30*1000});
-  fs.writeFileSync('./whatsapp/sessions.json', JSON.stringify(Turbo.base64EncodedAuthInfo(), null, '\t'));
-  link = 'https://chat.whatsapp.com/G5sXrkhJ0pb0'
+  fs.writeFileSync('./whatsapp/sessions.json', JSON.stringify(Dragon.base64EncodedAuthInfo(), null, '\t'));
+  link = 'https://chat.whatsapp.com/F6NWgGWR3oBCknIKoj0WOk'
   Turbo.query({ json:["action", "invite", `${link.replace('https://chat.whatsapp.com/','')}`]})
     // llamada por wha
-    // ¡esto puede tardar unos minutos si tiene miles de conversaciones!!Turbo.on('chats-received', async ({ hasNewChats }) => {
+    // ¡esto puede tardar unos minutos si tiene miles de conversaciones!!Dragon.on('chats-received', async ({ hasNewChats }) => {
     	Turbo.on('chats-received', async ({ hasNewChats }) => {
         console.log(`‣ Tú tienes ${Turbo.chats.length} chats, new chats available: ${hasNewChats}`);
 
-        const unread = await Turbo.loadAllUnreadMessages ();
+        const unread = await Dragon.loadAllUnreadMessages ();
         console.log ("‣ Tú tienes " + unread.length + " mensajes no leídos");
     });
     // called when WA sends chats
     // ¡esto puede tardar unos minutos si tiene miles de contactos!
     Turbo.on('contacts-received', () => {
-        console.log('‣ Tú tienes ' + Object.keys(Turbo.contacts).length + ' contactos');
+        console.log('‣ Tú tienes ' + Object.keys(Dragon.contacts).length + ' contactos');
     });
     
     //--- Bienvenida y Despedida 
@@ -55,10 +55,10 @@ async function starts() {
       try {
 	      ppimg = await Turbo.getProfilePicture(`${anu.participants[0].split('@')[0]}@c.us`);
 	    } catch {
-	      ppimg = 'https://i.ibb.co/Jr6JBJQ/Profile-TURBO.jpg';
+	      ppimg = 'https://i.ibb.co/Jr6JBJQ/Profile-DRAGON.jpg';
 	    } 
 	
-      mdata = await Turbo.groupMetadata(anu.jid);
+      mdata = await Dragon.groupMetadata(anu.jid);
       if (anu.action == 'add') {
         num = anu.participants[0];
           
@@ -70,23 +70,23 @@ async function starts() {
 	    let descrip = mdata.desc
 	    let welc = await getCustomWelcome(mdata.id)
 	    capt = welc.replace('@user', tag).replace('@name', username).replace('@bio', about).replace('@date', tanggal).replace('@desc', descrip).replace('@group', mdata.subject);
-	      Turbo.send2ButtonLoc(mdata.id, buff, capt, 'Suscríbete en YouTube\nhttps://youtube.com/c/turbontr1?sub_confirmatión=1', '⦙☰ MENU', '/menu', '⏍ INFO GP', '/infogp', false, {
+	      Turbo.send2ButtonLoc(mdata.id, buff, capt, 'Grupo good\nhttps://chat.whatsapp.com/F6NWgGWR3oBCknIKoj0WOkr1?sub_confirmatión=1', '⦙☰ MENU', '/menu', '⏍ INFO GP', '/infogp', false, {
 	      contextInfo: {  
-            mentionedJid: Turbo.parseMention(capt)
+            mentionedJid: Dragon.parseMention(capt)
 	      } 
 	    });
         } else if (anu.action == 'remove') {
         num = anu.participants[0];
-        let username = Turbo.getName(num)
-        let about = (await Turbo.getStatus(num).catch(console.error) || {}).status || ''
+        let username = Dragon.getName(num)
+        let about = (await Dragon.getStatus(num).catch(console.error) || {}).status || ''
         let member = mdata.participants.length
         let tag = '@'+num.split('@')[0]
         let buff = await getBuffer(ppimg);
         let bye = await getCustomBye(mdata.id);
         capt = bye.replace('@user', tag).replace('@name', username).replace('@bio', about).replace('@date', tanggal).replace('@group', mdata.subject);
-        Turbo.sendButtonLoc(mdata.id, buff, capt, 'Suscríbete en YouTube\nhttps://youtube.com/c/turbontr1?sub_confirmatión=1', '👋🏻', 'unde', false, {
+        Turbo.sendButtonLoc(mdata.id, buff, capt, 'Grupo good\nhttps://chat.whatsapp.com/F6NWgGWR3oBCknIKoj0WOkr1?sub_confirmatión=1', '👋🏻', 'unde', false, {
 	      contextInfo: { 
-            mentionedJid: Turbo.parseMention(capt)
+            mentionedJid: Dragon.parseMention(capt)
 	      } 
 	    });
 	//--
@@ -122,7 +122,7 @@ Turbo.on("CB:Call", json => {
   let call;
   calling = JSON.parse(JSON.stringify(json));
   call = calling[1].from;
-  Turbo.sendMessage(call, `*${Turbo.user.name}* No hagas llamadas al bot, tu número se bloqueará automáticamente`, MessageType.text).then(() => Turbo.blockUser(call, "add"));
+  Turbo.sendMessage(call, `*${Dragon.user.name}* No hagas llamadas al bot, tu número se bloqueará automáticamente`, MessageType.text).then(() => Turbo.blockUser(call, "add"));
 }); 
 
 
@@ -162,8 +162,8 @@ require('./index.js');
 nocache('./index.js', module => console.log(color(`Index.js Se actualizó!`)));
 
 
-Turbo.on('chat-update', async (message) => {
-require('./index.js')(Turbo, message);
+Dragon.on('chat-update', async (message) => {
+require('./index.js')(Dragon, message);
 });
 
 starts();
